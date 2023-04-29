@@ -1,5 +1,6 @@
 from typing import Union, List, Dict
 import csv
+import os
 
 
 def get_max_salary(path: str) -> int:
@@ -31,48 +32,26 @@ def get_min_salary(path: str) -> int:
         return minValue
 
 
-def is_valid(param):
-    not_none = param is not None  # que existe
-    valid_value = str(param).lstrip("-").isnumeric()  # que é valido
-    return all([not_none, valid_value])
-
-
-def to_int(param):
-    try:
-        return int(str(param))
-    except ValueError('caiu no int'):
-        """"""
-
-
 def matches_salary_range(job: Dict, salary: Union[int, str]) -> bool:
-    max = 'max_salary'
-    min = 'min_salary'
     try:
         sl = int(salary)
-        mx = int(job[max])
-        mn = int(job[min])
+        mx = int(job["max_salary"])
+        mn = int(job["min_salary"])
         if mn > mx:
-            raise ValueError('salary_min cannot be greater than salary_max')
-    except (ValueError, TypeError, KeyError):
-        raise ValueError('cannot convert')
+            raise ValueError("salary_min cannot be greater than salary_max")
+    except Exception:
+        raise ValueError("cannot convert all values to integer")
     return mn <= sl <= mx
 
 
 def filter_by_salary_range(
     jobs: List[dict], salary: Union[str, int]
 ) -> List[Dict]:
-    """Filters a list of jobs by salary range
-
-    Parameters
-    ----------
-    jobs : list
-        The jobs to be filtered
-    salary : int
-        The salary to be used as filter
-
-    Returns
-    -------
-    list
-        Jobs whose salary range contains `salary`
-    """
-    raise NotImplementedError
+    valids = []
+    for job in jobs:
+        try:
+            if matches_salary_range(job=job, salary=salary):
+                valids.append(job)
+        except Exception:
+            ''
+    return valids

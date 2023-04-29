@@ -1,6 +1,5 @@
 from typing import Union, List, Dict
 import csv
-import os
 
 
 def get_max_salary(path: str) -> int:

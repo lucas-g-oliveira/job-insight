@@ -31,29 +31,31 @@ def get_min_salary(path: str) -> int:
         return minValue
 
 
-def is_valid(value):
-    return str(value).isdigit()
+def is_valid(param):
+    not_none = param is not None  # que existe
+    valid_value = str(param).lstrip("-").isnumeric()  # que é valido
+    return all([not_none, valid_value])
+
+
+def to_int(param):
+    try:
+        return int(str(param))
+    except ValueError('caiu no int'):
+        """"""
 
 
 def matches_salary_range(job: Dict, salary: Union[int, str]) -> bool:
-    if not is_valid(salary):
-        raise ValueError()
-    values = []
-    for data in job:
-        max = data["max_salary"]
-        min = data["min_salary"]
-        if not is_valid(max) or not is_valid(min):
-            raise ValueError()
-        elif float(min) >= float(max):
-            raise ValueError()
-        else:
-            values.append({max: int(max), min: int(min)})
-    return all(
-        [
-            value["max_salary"] <= salary <= value["min_salary"]
-            for value in values
-        ]
-    )
+    max = 'max_salary'
+    min = 'min_salary'
+    try:
+        sl = int(salary)
+        mx = int(job[max])
+        mn = int(job[min])
+        if mn > mx:
+            raise ValueError('salary_min cannot be greater than salary_max')
+    except (ValueError, TypeError, KeyError):
+        raise ValueError('cannot convert')
+    return mn <= sl <= mx
 
 
 def filter_by_salary_range(
